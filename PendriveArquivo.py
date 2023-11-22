@@ -9,6 +9,7 @@ class PenDrive:
         self.__arquivos = {}
         self.__espaco_ocupado = 0
         self.__espaco_livre = self.__capacidade
+        print('Pendrive criado com sucesso!')
 
 
     def __str__(self):
@@ -16,8 +17,8 @@ class PenDrive:
         tabela_arquivos += f'Nome:\t\t\tTamanho:\tTipo:\n'
         for i in self.__arquivos.values():
             tabela_arquivos += f'{i.nome}\t\t\t{i.tamanho}\t\t\t{i.tipo}\n'
-        espaco_ocupado = f'\nEspaço ocupado: {self.__espaco_ocupado}\n'
-        espaco_livre = f'Espaço livre: {self.__capacidade - self.__espaco_ocupado}\n'
+        espaco_ocupado = f'\nEspaço ocupado: {self.__espaco_ocupado} MB\n'
+        espaco_livre = f'Espaço livre: {self.__capacidade - self.__espaco_ocupado} MB\n '
 
         return tabela_arquivos+espaco_ocupado+espaco_livre
         # nome
@@ -44,7 +45,7 @@ class PenDrive:
         return self.__espaco_livre
 
 
-    def espacos_ocupado(self):
+    def atualizar_espaco_ocupado(self):
         self.__espaco_ocupado = 0
         for i in list(self.__arquivos.values()):
             self.__espaco_ocupado += i.tamanho
@@ -58,6 +59,8 @@ class PenDrive:
             self.__arquivos = {}
             self.__espaco_livre = self.__capacidade
             self.__espaco_ocupado = 0
+            print('Pendrive formatado com sucesso!')
+            print(self)
         else:
             print('Seu pendrive continua com seus arquivos.')
 
@@ -67,9 +70,10 @@ class PenDrive:
             if arquivo.tamanho <= self.espaco_livre:
                 if arquivo.nome not in self.__arquivos.keys():
                     self.__arquivos[arquivo.nome] = arquivo
-                    self.espacos_ocupado()
+                    self.atualizar_espaco_ocupado()
+                    print(f'Arquivo {arquivo.nome} adicionado com sucesso!')
                 else:
-                    print('ERRO: Nome já está sendo utilizado.')
+                    print(f'ERRO: Nome "{arquivo.nome}" já está sendo utilizado.')
             else:
                 print('ERRO: Espaço insuficiente.')
         else:
@@ -82,11 +86,36 @@ class PenDrive:
                 for i in list(self.__arquivos.keys()):
                     if arquivo.nome == i:
                         self.__arquivos.pop(i)
-                        self.espacos_ocupado()
+                        self.atualizar_espaco_ocupado()
+                        print(f'Arquivo {arquivo.nome} apagado com sucesso!')
             else:
-                print('Arquivo não encontrado.')
+                print('ERRO: Arquivo não encontrado.')
         else:
-            print('Tipo inválido.')
+            print('ERRO: Tipo inválido.')
+
+
+    def copiar_para_outro_pendrive(self, pendrive, arquivo):
+        if isinstance(pendrive, PenDrive):
+            if arquivo.nome in list(self.__arquivos.keys()):
+                pendrive.adicionar_arquivo(arquivo)
+                print(f'Arquivo {arquivo.nome} copiado com sucesso!')
+            else:
+                print('ERRO: Arquivo não encontrado.')
+        else:
+            print('ERRO: Tipo inválido.')
+
+    def mover_para_outro_pendrive(self, pendrive, arquivo):
+        if isinstance(pendrive, PenDrive):
+            if arquivo.nome in list(self.__arquivos.keys()):
+                pendrive.adicionar_arquivo(arquivo)
+                self.apagar_arquivo(arquivo)
+                print(f'Arquivo {arquivo.nome} movido com sucesso!')
+            else:
+                print('ERRO: Arquivo não encontrado.')
+        else:
+            print('ERRO: Tipo inválido.')
+
+
 
 
 class Arquivo:
@@ -111,9 +140,10 @@ class Arquivo:
     def renomear(self, nome):
         self.__nome = nome
 
-
+# Criação pendrive
 pendrive1 = PenDrive(1, 50)
 
+# Adicionando arquivos
 pendrive1.adicionar_arquivo(Arquivo('Video', 1, 10))
 
 print(pendrive1)
@@ -127,6 +157,8 @@ pendrive1.adicionar_arquivo(Arquivo('Audio', 3, 5))
 
 print(pendrive1)
 print('-------------------------------------------------------')
+# Adicionando arquivo duplicado
+
 pendrive1.adicionar_arquivo(Arquivo('Audio', 3, 5))
 
 print(pendrive1)
@@ -135,15 +167,39 @@ pendrive1.adicionar_arquivo(Arquivo('Zip', 4, 30))
 
 print(pendrive1)
 print('-------------------------------------------------------')
+# Apagando arquivo
 
 pendrive1.apagar_arquivo(Arquivo('Zip', 4, 30))
 
 print(pendrive1)
 print('-------------------------------------------------------')
+# Formatando pendrive
 
 pendrive1.formatar()
 
+print('-------------------------------------------------------')
+# Criação de segundo pendrive para copiar / mover
+
+pendrive2 = PenDrive(2, 100)
 print(pendrive1)
+print(pendrive2)
+print('-------------------------------------------------------')
+pendrive1.adicionar_arquivo(Arquivo('Audio', 3, 5))
+pendrive1.adicionar_arquivo(Arquivo('Image', 2, 0.5))
+
+print(pendrive1)
+
+pendrive1.copiar_para_outro_pendrive(pendrive2, Arquivo('Audio', 3, 5))
+
+print(pendrive2)
+
+print('-------------------------------------------------------')
+pendrive1.mover_para_outro_pendrive(pendrive2, Arquivo('Image', 2, 0.5))
+
+
+print(pendrive1)
+print(pendrive2)
+
 print('-------------------------------------------------------')
 
 
