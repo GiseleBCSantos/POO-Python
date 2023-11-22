@@ -138,6 +138,7 @@ class Arquivo:
         return self.__tamanho
 
     def renomear(self, nome):
+        print(f'Arquivo {self.__nome} renomeado para {nome} com sucesso.')
         self.__nome = nome
 
 # Criação pendrive
@@ -175,7 +176,7 @@ print(pendrive1)
 print('-------------------------------------------------------')
 # Formatando pendrive
 
-pendrive1.formatar()
+# pendrive1.formatar()
 
 print('-------------------------------------------------------')
 # Criação de segundo pendrive para copiar / mover
@@ -201,6 +202,9 @@ print(pendrive1)
 print(pendrive2)
 
 print('-------------------------------------------------------')
+list(pendrive1.arquivos.values())[0].renomear('Video2')
+print(pendrive1)
+
 
 
 
