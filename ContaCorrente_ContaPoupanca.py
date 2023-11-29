@@ -1,6 +1,8 @@
 class ContaCorrente:
-    def __init__(self, numero, saldo):
-        self._numero = numero
+    seq = 0
+    def __init__(self, saldo):
+        ContaCorrente.seq += 1
+        self._numero = ContaCorrente.seq
         self._saldo = saldo
 
 
@@ -13,7 +15,7 @@ class ContaCorrente:
 
     @property
     def saldo(self):
-        return self._saldo
+        return f'R$ {self._saldo:.2f}'
 
     @saldo.setter
     def saldo(self, value):
@@ -33,10 +35,6 @@ class ContaCorrente:
             print('Saldo insuficiente!')
 
 
-    def Saldo(self):
-        print(f'R$ {self._saldo}.')
-
-
     def transferir(self, value, conta):
         if isinstance(conta, ContaCorrente):
             if self._saldo - value >= 0:
@@ -50,8 +48,8 @@ class ContaCorrente:
 
 
 class ContaPoupanca(ContaCorrente):
-    def __init__(self, numero, saldo, taxa_juros):
-        super().__init__(numero, saldo)
+    def __init__(self, saldo, taxa_juros):
+        super().__init__(saldo)
         self.__taxa_juros = taxa_juros
 
 
@@ -76,8 +74,8 @@ class ContaPoupanca(ContaCorrente):
 
 
 class ContaImposto(ContaCorrente):
-    def __init__(self, numero, saldo, percentual_imposto):
-        super().__init__(numero, saldo)
+    def __init__(self, saldo, percentual_imposto):
+        super().__init__(saldo)
         self.__percentual_imposto = percentual_imposto
 
     def __str__(self):
@@ -96,32 +94,30 @@ class ContaImposto(ContaCorrente):
     def calcula_imposto(self):
         imposto = self._saldo * (self.__percentual_imposto / 100)
         self._saldo -= imposto
-
-        # print(f'Imposto: {imposto} % \nSaldo atual: {self._saldo}')
         print(self)
 
 
 
 
 # Criação de contas
-conta_1 = ContaCorrente(1, 100)
-conta_2 = ContaCorrente(2, 200)
+conta_1 = ContaCorrente(100)
+conta_2 = ContaCorrente(200)
 
 print(conta_1)
 print(conta_2)
 print('-------------------------------------------------------')
 
 
-conta_1_poupanca = ContaPoupanca(1, 100, 5)
-conta_2_poupanca = ContaPoupanca(2, 200, 8)
+conta_1_poupanca = ContaPoupanca(300, 5)
+conta_2_poupanca = ContaPoupanca(400, 8)
 
 
 print(conta_1_poupanca)
 print(conta_2_poupanca)
 print('-------------------------------------------------------')
 
-conta_1_contaImposto = ContaImposto(1, 100, 10)
-conta_2_contaImposto =  ContaImposto(2, 200, 12)
+conta_1_contaImposto = ContaImposto(100, 10)
+conta_2_contaImposto =  ContaImposto(100, 12)
 
 print(conta_1_contaImposto)
 print(conta_2_contaImposto)
@@ -131,12 +127,14 @@ print('-------------------------------------------------------')
 # Teste de métodos da ContaCorrente
 conta_1.creditar(50)
 
+print(conta_1)
+
 print('-------------------------------------------------------')
 conta_1.debitar(151)
 print('-------------------------------------------------------')
 conta_1.debitar(50)
 print('-------------------------------------------------------')
-conta_1.Saldo()
+print(conta_1.saldo)
 print('-------------------------------------------------------')
 conta_1.transferir(50, conta_2)
 print(conta_1)
