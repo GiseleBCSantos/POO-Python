@@ -57,13 +57,11 @@ class ContaCorrente:
         else:
             print('Saldo insuficiente!')
 
-
     def transferir(self, value, conta):
         if isinstance(conta, ContaCorrente):
             if self._saldo - value >= 0:
-                self._saldo -= value
-                conta._saldo += value
-                print(f'Valor transferido com sucesso para conta de número {conta.numero}. Saldo atual: R$ {self._saldo}.')
+                self.debitar(value)
+                conta.creditar(value)
             else:
                 print('Saldo insuficiente!')
         else:
@@ -71,7 +69,7 @@ class ContaCorrente:
 
     def sacar(self, valor):
         if self._saldo - 2 >= 0:
-            self._saldo -= (valor+2)
+            self.debitar(valor+2)
             print(f'R$ {valor:.2f} sacado com sucesso!\nCobrança para saque: R$ 2.00\nSaldo atual: R$ {self._saldo:.2f}')
         else:
             print('Saldo insuficiente!')
@@ -103,20 +101,19 @@ class ContaPoupanca(ContaCorrente):
     def qntd_saques(self, value):
         print('Sem permissão.')
 
-
     def render_juros(self):
         juros = self._saldo * (self.__taxa_juros / 100)
-        self._saldo += juros
+        self.creditar(juros)
         print(self)
 
     def sacar(self, valor):
         self.__qntd_saques += 1
         if self.__qntd_saques < 5:
-            self._saldo -= valor
+            self.debitar(valor)
             print(f'R$ {valor:.2f} sacado com sucesso!\nSaldo atual: R$ {self._saldo:.2f}')
         else:
             if self._saldo - 0.5 >= 0:
-                self._saldo -= (valor+0.5)
+                self.debitar(valor+0.5)
                 print(f'R$ {valor:.2f} sacado com sucesso!\nCobrança para saque: R$ 0.50\nSaldo atual: R$ {self._saldo:.2f}')
             else:
                 print('Saldo insuficiente!')
@@ -142,7 +139,7 @@ class ContaImposto(ContaCorrente):
 
     def calcula_imposto(self):
         imposto = self._saldo * (self.__percentual_imposto / 100)
-        self._saldo -= imposto
+        self.debitar(imposto)
         print(self)
 
 
