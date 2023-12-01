@@ -38,9 +38,8 @@ class ContaCorrente:
     def transferir(self, value, conta):
         if isinstance(conta, ContaCorrente):
             if self._saldo - value >= 0:
-                self._saldo -= value
-                conta._saldo += value
-                print(f'Valor transferido com sucesso para conta de número {conta.numero}. Saldo atual: R$ {self._saldo}.')
+                self.debitar(value)
+                conta.creditar(value)
             else:
                 print('Saldo insuficiente!')
         else:
@@ -68,7 +67,7 @@ class ContaPoupanca(ContaCorrente):
 
     def render_juros(self):
         juros = self._saldo * (self.__taxa_juros / 100)
-        self._saldo += juros
+        self.creditar(juros)
         print(self)
 
 
@@ -93,7 +92,7 @@ class ContaImposto(ContaCorrente):
 
     def calcula_imposto(self):
         imposto = self._saldo * (self.__percentual_imposto / 100)
-        self._saldo -= imposto
+        self.debitar(imposto)
         print(self)
 
 
