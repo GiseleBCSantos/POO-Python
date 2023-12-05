@@ -26,11 +26,11 @@ class ContaCorrente:
     def __init__(self, saldo):
         ContaCorrente.seq += 1
         self._numero = ContaCorrente.seq
-        self._saldo = saldo
+        self.__saldo = saldo
 
 
     def __str__(self):
-        return f'Numero da conta: {self._numero} \nSaldo da conta: {self._saldo:.2f}\n'
+        return f'Numero da conta: {self._numero} \nSaldo da conta: {self.__saldo:.2f}\n'
 
     @property
     def numero(self):
@@ -38,28 +38,27 @@ class ContaCorrente:
 
     @property
     def saldo(self):
-        return f'R$ {self._saldo:.2f}'
-
+        return self.__saldo
     @saldo.setter
     def saldo(self, value):
         print('Sem permissão')
 
     def creditar(self, value):
-        self._saldo += value
-        print(f'R$ {value} creditado com sucesso. Saldo atual: R$ {self._saldo}')
+        self.__saldo += value
+        print(f'R$ {value} creditado com sucesso. Saldo atual: R$ {self.__saldo}')
 
 
     def debitar(self, value):
-        if self._saldo - value >= 0:
-            self._saldo -= value
-            print(f'R$ {value} debitado com sucesso. Saldo atual: R$ {self._saldo}')
+        if self.__saldo - value >= 0:
+            self.__saldo -= value
+            print(f'R$ {value} debitado com sucesso. Saldo atual: R$ {self.__saldo}')
 
         else:
             print('Saldo insuficiente!')
 
     def transferir(self, value, conta):
         if isinstance(conta, ContaCorrente):
-            if self._saldo - value >= 0:
+            if self.__saldo - value >= 0:
                 self.debitar(value)
                 conta.creditar(value)
             else:
@@ -68,9 +67,9 @@ class ContaCorrente:
             print('ERRO: Tipo inválido.')
 
     def sacar(self, valor):
-        if self._saldo - 2 >= 0:
+        if self.__saldo - 2 >= 0:
             self.debitar(valor+2)
-            print(f'R$ {valor:.2f} sacado com sucesso!\nCobrança para saque: R$ 2.00\nSaldo atual: R$ {self._saldo:.2f}')
+            print(f'R$ {valor:.2f} sacado com sucesso!\nCobrança para saque: R$ 2.00\nSaldo atual: R$ {self.__saldo:.2f}')
         else:
             print('Saldo insuficiente!')
 
@@ -102,7 +101,7 @@ class ContaPoupanca(ContaCorrente):
         print('Sem permissão.')
 
     def render_juros(self):
-        juros = self._saldo * (self.__taxa_juros / 100)
+        juros = self.saldo * (self.__taxa_juros / 100)
         self.creditar(juros)
         print(self)
 
@@ -110,11 +109,11 @@ class ContaPoupanca(ContaCorrente):
         self.__qntd_saques += 1
         if self.__qntd_saques < 5:
             self.debitar(valor)
-            print(f'R$ {valor:.2f} sacado com sucesso!\nSaldo atual: R$ {self._saldo:.2f}')
+            print(f'R$ {valor:.2f} sacado com sucesso!\nSaldo atual: R$ {self.saldo:.2f}')
         else:
-            if self._saldo - 0.5 >= 0:
+            if self.saldo - 0.5 >= 0:
                 self.debitar(valor+0.5)
-                print(f'R$ {valor:.2f} sacado com sucesso!\nCobrança para saque: R$ 0.50\nSaldo atual: R$ {self._saldo:.2f}')
+                print(f'R$ {valor:.2f} sacado com sucesso!\nCobrança para saque: R$ 0.50\nSaldo atual: R$ {self.saldo:.2f}')
             else:
                 print('Saldo insuficiente!')
 
@@ -138,7 +137,7 @@ class ContaImposto(ContaCorrente):
 
 
     def calcula_imposto(self):
-        imposto = self._saldo * (self.__percentual_imposto / 100)
+        imposto = self.saldo * (self.__percentual_imposto / 100)
         self.debitar(imposto)
         print(self)
 
@@ -156,7 +155,7 @@ banco.adicionar_conta(conta2)
 banco.adicionar_conta(conta3)
 banco.adicionar_conta(conta4)
 
-banco.sacar(conta1, 50)
+banco.sacar(conta1, 20)
 print('----------------------------')
 for i in range(5):
     banco.sacar(conta4, 10)
